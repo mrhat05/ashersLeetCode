@@ -33,7 +33,6 @@ public:
             if(grid[i][n-1]==1)dfs(i,n-1,grid,vis,m,n,cnt);
         }
         
-        cout<<total<<" "<<cnt;
         return total-cnt;
     }
 };
