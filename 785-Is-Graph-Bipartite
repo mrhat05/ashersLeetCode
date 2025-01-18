@@ -1,0 +1,26 @@
+class Solution {
+public:
+    bool dfs(int i,int col,vector<int>&vis,vector<vector<int>>& graph){
+        if(i>=graph.size())return false;
+        vis[i]=col;
+        for(auto&it:graph[i]){
+            if(vis[it]==0){
+                if(!dfs(it,col==1?2:1,vis,graph))return false;
+            }
+            else if(col==vis[it]){
+                return false;
+            }
+        }
+        return true;
+    }
+    bool isBipartite(vector<vector<int>>& graph) {
+        int n=graph.size();
+        vector<int>vis(n,0);
+        for(int i=0;i<n;i++){
+            if(vis[i]==0){
+                if(!dfs(i,1,vis,graph))return false;
+            }
+        }
+        return true;
+    }
+};
