@@ -4,39 +4,70 @@ using namespace std;
 
 
 // } Driver Code Ends
-class Solution {
-  public:
-    // Function to find sum of weights of edges of the Minimum Spanning Tree.
-    int spanningTree(int V, vector<vector<int>> adj[]) {
-        vector<int>vis(V,0);
 
-        priority_queue<vector<int>,vector<vector<int>>,greater<vector<int>>>pq;
-        
-        pq.push({0,0,-1});
-        
-        int sum=0;
-        
-        while(!pq.empty()){
-            auto it=pq.top();
-            pq.pop();
+class DisjointSet{
+    vector<int>par,siz;
+    public:
+        DisjointSet(int n){
+            par.resize(n+1);
+            siz.resize(n+1,0);
             
-            int node=it[1];
-            int srcNode=it[2];
-            int wt=it[0];
-            
-            if(vis[node]!=1){
-                vis[node]=1;
-                sum+=wt;
-                for(auto&it:adj[node]){
-                    int childNode=it[0];
-                    int childWt=it[1];
-                    if(vis[childNode]!=1){
-                        pq.push({childWt,childNode,node});
-                    }
-                }
+            for(int i=0;i<=n;i++){
+                par[i]=i;
+                siz[i]=1;
             }
         }
-        return sum;
+        
+        int findUlP(int x){
+            if(par[x]==x)return x;
+            
+            return par[x]=findUlP(par[x]);
+        }
+        
+        void unionSiz(int x,int y){
+            int ulP_x=findUlP(x);
+            int ulP_y=findUlP(y);
+            
+            if(ulP_x==ulP_y)return;
+            
+            if(siz[ulP_x]<siz[ulP_y]){
+                par[ulP_x]=ulP_y;
+                siz[ulP_y]+=siz[ulP_x];
+            }
+            else{
+                par[ulP_y]=ulP_x;
+                siz[ulP_x]+=siz[ulP_y];
+            }
+        }
+};
+class Solution {
+  public:
+    int spanningTree(int V, vector<vector<int>> adj[]) {
+       vector<vector<int>>edges;
+       for(int i=0;i<V;i++){
+           for(auto&it:adj[i]){
+               int node=i;
+               int childNode=it[0];
+               int childWt=it[1];
+               
+               edges.push_back({childWt,node,childNode});
+           }
+       }
+       sort(edges.begin(),edges.end());
+       DisjointSet ds(V);
+       int ansWt=0;
+       for(auto&it:edges){
+           int u=it[1];
+           int v=it[2];
+           int wt=it[0];
+           
+           if(ds.findUlP(u)!=ds.findUlP(v)){
+               ansWt+=wt;
+               ds.unionSiz(u, v); 
+           }
+       }
+       
+       return ansWt;
     }
 };
 
