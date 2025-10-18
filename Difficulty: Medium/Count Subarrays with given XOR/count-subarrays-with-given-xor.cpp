@@ -1,21 +1,20 @@
 class Solution {
   public:
-    int subarrayXor(vector<int> &arr, int k) {
-        unordered_map<int, int> freq;
-        int xorSum = 0, count = 0;
-
-        for (int i = 0; i < arr.size(); i++) {
-            xorSum ^= arr[i];
-
-            if (xorSum == k)
-                count++;
-
-            if (freq.find(xorSum ^ k) != freq.end())
-                count += freq[xorSum ^ k];
-
-            freq[xorSum]++;
+    long subarrayXor(vector<int> &arr, int k) {
+        int sum=0;
+        int cnt=0;
+        unordered_map<int,int>mp;
+        
+        for(int i=0;i<arr.size();i++){
+            sum^=arr[i];
+            
+            if(sum==k)cnt++;
+            
+            if(mp.find(sum^k)!=mp.end())cnt+=mp[sum^k];
+            
+            mp[sum]++;
         }
-
-        return count;
+        
+        return cnt;
     }
 };
